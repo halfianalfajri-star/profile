@@ -1,72 +1,901 @@
 <!DOCTYPE html>
-<html langh="id">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Kartu Digital</title> 
+    <title>Undangan Pernikahan Digital - Pendakian Gunung</title>
     
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-     <link rel="stylesheet" href="style.css">
-
-     <style>
-        .avatar-placeholder {
-        width: 80px;
-        height: 80px;
-        margin:  0 auto 12px auto;
-        border-radius: 50%;
-        background-color: #161111;
-        color: #80156e;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
+    <style>
+        /* ==========================================
+           COLOR PALETTE & VARIABLES (Earthy Mountain Theme)
+           ========================================== */
+        :root {
+            --primary-dark: #12281d;   /* Dark Forest Green */
+            --primary-medium: #1f4231; /* Deep Pine */
+            --primary-light: #2e5a44;  /* Muted Leaf Green */
+            --accent-gold: #d4af37;    /* Warm Gold */
+            --accent-copper: #c87d55;  /* Terra Cotta / Warm Rust */
+            --bg-sand: #e6dfd3;        /* Darker Warm Sand (Kontras tinggi) */
+            --bg-card: #f9f7f2;        /* Off-white Card */
+            --text-dark: #1a231e;      /* Strong Charcoal Text */
+            --text-muted: #4a5750;     /* Muted Dark Green */
+            --font-title: 'Cinzel Decorative', cursive;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --font-script: 'Sacramento', cursive;
         }
 
-        .nama siswa {
-        font-size: 1.25rem;
-        color: #e6eaf0;
-        margin-top: 4px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
         }
 
-        .jurusan {
-        font-size:0.9rem;
-        color: #050505;
-        margin-top: 0%;
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-sand);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .quonte {
-        font-style: italic;
-        font-size: 0,8rem;
-        color: #475569;
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ==========================================
+           OPENING OVERLAY / COVER LOCK
+           ========================================== */
+        #opening-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(rgba(18, 40, 29, 0.85), rgba(10, 20, 15, 0.9)), 
+                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #ffffff;
+            padding: 20px;
+            transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+        }
+
+        #opening-screen.opened {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cover-badge {
+            border: 2px solid var(--accent-gold);
+            padding: 8px 18px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+            background: rgba(0,0,0,0.3);
+        }
+
+        .cover-title {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+
+        .btn-open {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-open:hover {
+            transform: translateY(-3px);
+            background: #e5be3f;
+        }
+
+        /* ==========================================
+           NAVIGATION BAR (Sticky & Bottom)
+           ========================================== */
+        nav.navbar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(18, 40, 29, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-gold);
+            border-radius: 40px;
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            gap: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        nav.navbar.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            color: var(--primary-dark);
+            background: var(--accent-gold);
+        }
+
+        /* Music Controller */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary-dark);
+            color: var(--accent-gold);
+            border: 2px solid var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* ==========================================
+           HERO SECTION
+           ========================================== */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(to bottom, rgba(18, 40, 29, 0.75), rgba(230, 223, 211, 1)), 
+                        url('acabun.jpeg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: #ffffff;
+            position: relative;
+        }
+
+        .hero h3 {
+            font-family: var(--font-body);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.7);
+        }
+
+        .hero p {
+            color: #ffffff;
+            font-weight: 500;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+        }
+
+        /* Countdown Timer */
+        .countdown {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .countdown-item {
+            background: rgba(18, 40, 29, 0.85);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 10px 15px;
+            min-width: 70px;
+            color: #fff;
+        }
+
+        .countdown-item span {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .countdown-item label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ==========================================
+           SECTION COMMON STYLES
+           ========================================== */
+        section {
+            padding: 80px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header .icon {
+            color: var(--accent-copper);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-heading);
+            font-size: 2.3rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* ==========================================
+           QUOTES SECTION
+           ========================================== */
+        .quotes-card {
+            background: var(--primary-medium);
+            color: #ffffff;
+            border-left: 5px solid var(--accent-gold);
+            border-radius: 15px;
+            padding: 35px 25px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            position: relative;
+        }
+
+        .quotes-card i.quote-icon {
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .quotes-card p {
+            font-family: var(--font-heading);
+            font-style: italic;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #f1ece1;
+        }
+
+        .quotes-card span {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+        }
+
+        /* ==========================================
+           COUPLE SECTION
+           ========================================== */
+        .couple-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .couple-wrapper {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .couple-card {
+            background: var(--bg-card);
+			background-color: #12281d;
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+            flex: 1;
+            width: 100%;
+            max-width: 380px;
+            border: 2px solid rgba(18, 40, 29, 0.1);
+            position: relative;
+			color: #f1ece1;
+			
+        }
+
+        .photo-frame {
+            width: 190px;
+            height: 230px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 4px solid var(--primary-dark);
+            outline: 2px solid var(--accent-gold);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+			
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .couple-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+        }
+
+        .couple-card .parents {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        .couple-card .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: var(--primary-dark);
+            color: var(--accent-gold);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .couple-divider {
+            font-family: var(--font-script);
+            font-size: 4rem;
+            color: var(--accent-copper);
+            font-weight: bold;
+        }
+
+        /* ==========================================
+           EVENTS SECTION (Check Point Style)
+           ========================================== */
+        .event-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .event-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--primary-medium);
+            border-left: 1px solid rgba(0,0,0,0.08);
+            border-right: 1px solid rgba(0,0,0,0.08);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .checkpoint-tag {
+            display: inline-block;
+            background: var(--primary-medium);
+            color: var(--accent-gold);
+            padding: 5px 14px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .event-card h3 {
+            font-family: var(--font-heading);
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .event-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .event-details div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .event-details i {
+            color: var(--accent-copper);
+            width: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* ==========================================
+           MAPS SECTION
+           ========================================== */
+        .map-container {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: 4px solid var(--bg-card);
+            margin-bottom: 25px;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 320px;
+            border: 0;
+        }
+
+        .btn-map {
+            display: block;
+            width: max-content;
+            margin: 0 auto;
+            background: var(--primary-dark);
+            color: var(--accent-gold);
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(18, 40, 29, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-map:hover {
+            background: var(--primary-light);
+        }
+
+        /* ==========================================
+           RSVP SECTION
+           ========================================== */
+        .rsvp-form {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dcd6cd;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            background: #ffffff;
+            color: var(--text-dark);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-medium);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent-copper);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #b06842;
+        }
+
+        .wishes-list {
+            max-height: 260px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .wish-item {
+            background: var(--bg-card);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-gold);
+            font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .wish-item strong {
+            color: var(--primary-dark);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+
+        /* ==========================================
+           THANKS SECTION
+           ========================================== */
+        .thanks-section {
+            text-align: center;
+            background: linear-gradient(to top, var(--primary-dark), var(--primary-medium));
+            color: #fff;
+            border-radius: 30px 30px 0 0;
+            padding: 70px 20px 100px;
+            margin-bottom: 0;
+        }
+
+        .thanks-section h2 {
+            font-family: var(--font-heading);
+            font-size: 2.3rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .thanks-section p {
+            max-width: 550px;
+            margin: 0 auto 30px;
+            font-size: 0.98rem;
+            color: #e3ded6;
+            line-height: 1.7;
         }
     </style>
-
-
-
-
-
 </head>
 <body>
 
-    <div class="card">
-        <div class="avatar-placeholder">FOTO</div>
-        <h1 class="nama-siswa">Halfian al fajri</h1>
-        <p class="jurusan">XI RPL/KLS II</p>         
+    <!-- MUSIC CONTROLLER -->
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">
+        <i class="fa-solid fa-music"></i>
+    </button>
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=acoustic-guitars-ambient-113543.mp3" type="audio/mpeg">
+    </audio>
 
-    <div class="info-section"> 
-        <p class="status-badge" style="display: inline-block; background-color:#000000; color: #80156e; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size:0.8rem;">
-            😃 Aktif Belajar
-            </p>
-        <p class="quote">konsistensi adalah kunci menguasai</p> 
-    </div>
-    
-    <!--ELEMEN UNTUK INLINE CSS-->
-    <a href="#" class="btn-kontak" style="display: block; margin-top: 16px; padding: 10px; background-color:#000000; color: #80156e; text-decoration: none; border-radius: 6px; font-weight: 500;">
-        ✨ Hubungi saya
-    </a>
+    <!-- OPENING SCREEN OVERLAY -->
+    <div id="opening-screen">
+        <div class="cover-badge"><i class="fa-solid fa-mountain"></i> The Great Adventure</div>
+        <p style="letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 10px;">WEDDING INVITATION</p>
+        <h1 class="cover-title">Abun sungkar & Calista arum</h1>
+        <p style="font-style: italic; opacity: 0.9;">"Puncak tertinggi adalah saat kita melangkah bersama."</p>
+        
+        <button class="btn-open" onclick="openInvitation()">
+            <i class="fa-solid fa-envelope-open"></i> Buka Undangan
+        </button>
     </div>
 
-<body>
-<html>
-  
+    <!-- STICKY NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <a href="#hero" class="nav-link active" title="Utama"><i class="fa-solid fa-house"></i></a>
+        <a href="#quotes" class="nav-link" title="Quotes"><i class="fa-solid fa-quote-right"></i></a>
+        <a href="#couple" class="nav-link" title="Pasangan"><i class="fa-solid fa-heart"></i></a>
+        <a href="#event" class="nav-link" title="Acara"><i class="fa-solid fa-calendar-check"></i></a>
+        <a href="#location" class="nav-link" title="Lokasi"><i class="fa-solid fa-map-location-dot"></i></a>
+        <a href="#rsvp" class="nav-link" title="RSVP"><i class="fa-solid fa-clipboard-user"></i></a>
+        <a href="#thanks" class="nav-link" title="Terima Kasih"><i class="fa-solid fa-flag"></i></a>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero">
+        <h3>Walimatul 'Ursy</h3>
+        <h1>Abun sungkar & Calista arum</h1>
+        <p>Sabtu, 24 Oktober 2026</p>
+
+        <!-- Countdown -->
+        <div class="countdown">
+            <div class="countdown-item">
+                <span id="days">00</span>
+                <label>Hari</label>
+            </div>
+            <div class="countdown-item">
+                <span id="hours">00</span>
+                <label>Jam</label>
+            </div>
+            <div class="countdown-item">
+                <span id="minutes">00</span>
+                <label>Menit</label>
+            </div>
+            <div class="countdown-item">
+                <span id="seconds">00</span>
+                <label>Detik</label>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUOTES SECTION -->
+    <section id="quotes">
+        <div class="quotes-card">
+            <i class="fa-solid fa-compass quote-icon"></i>
+            <p>"Menikah itu seperti mendaki gunung bersama. Bukan tentang siapa yang sampai di puncak lebih dulu, melainkan tentang saling menjaga, berteduh saat badai, dan menikmati setiap jengkal langkah perjalanan hingga ke puncak keabadian."</p>
+            <span>— PETUALANGAN CINTA KAMI</span>
+        </div>
+    </section>
+
+    <!-- COUPLE SECTION -->
+    <section id="couple">
+        <div class="section-header">
+            <i class="fa-solid fa-mountain-sun icon"></i>
+            <h2>Pasangan Mempelai</h2>
+            <p>Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengikat janji suci dalam pernikahan.</p>
+        </div>
+
+        <div class="couple-wrapper">
+            <!-- Groom -->
+            <div class="couple-card">
+                <div class="photo-frame">
+                    <img src="WhatsApp Image 2026-10-20 at 11.45.51.jpeg">
+                </div>
+                <h3>Romeo Alpha, S.T.</h3>
+                <p class="parents">Putra Pertama dari<br>Bpk. Fulan & Ibu Fulanah</p>
+                <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i> @abunsungkar</a>
+            </div>
+
+            <div class="couple-divider">&</div>
+
+            <!-- Bride -->
+            <div class="couple-card">
+                <div class="photo-frame">
+                    <img src="WhatsApp Image 2026-10-20 at 11.46.10.jpeg">
+                </div>
+                <h3>Juliet Sierra, S.Ked.</h3>
+                <p class="parents">Putri Kedua dari<br>Bpk. Fulan & Ibu Fulanah</p>
+                <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i> @callista</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- EVENT SECTION -->
+    <section id="event">
+        <div class="section-header">
+            <i class="fa-solid fa-route icon"></i>
+            <h2>Rangkaian Acara</h2>
+            <p>Jadwal dan pos perjalanan hari bahagia kami</p>
+        </div>
+
+        <div class="event-timeline">
+            <!-- Pos 1: Akad -->
+            <div class="event-card">
+                <span class="checkpoint-tag"><i class="fa-solid fa-campground"></i> POS 1: AKAD NIKAH</span>
+                <h3>Ikrar Suci</h3>
+                <div class="event-details">
+                    <div><i class="fa-solid fa-calendar-day"></i> Sabtu, 24 Oktober 2026</div>
+                    <div><i class="fa-solid fa-clock"></i> 08.00 - 10.00 WIB</div>
+                    <div><i class="fa-solid fa-location-dot"></i> Masjid Raya Puncak Mountain, Bogor</div>
+                </div>
+            </div>
+
+            <!-- Pos 2: Resepsi -->
+            <div class="event-card">
+                <span class="checkpoint-tag"><i class="fa-solid fa-tree"></i> POS 2: RESEPSI PERNIKAHAN</span>
+                <h3>Perayaan & Syukuran</h3>
+                <div class="event-details">
+                    <div><i class="fa-solid fa-calendar-day"></i> Sabtu, 24 Oktober 2026</div>
+                    <div><i class="fa-solid fa-clock"></i> 11.00 - 16.00 WIB</div>
+                    <div><i class="fa-solid fa-location-dot"></i> Pine Forest Resort Hall, Bogor</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOCATION MAP SECTION -->
+    <section id="location">
+        <div class="section-header">
+            <i class="fa-solid fa-map-pinned icon"></i>
+            <h2>Lokasi Acara</h2>
+            <p>Petunjuk arah menuju tempat perayaan kami</p>
+        </div>
+
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126829.271383827!2d106.80918115!3d-6.61118745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69c5e71234567%3A0x123456789abcdef!2sBogor%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1680000000000!5m2!1sen!2sid" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <a href="https://maps.google.com" target="_blank" class="btn-map">
+            <i class="fa-solid fa-diamond-turn-right"></i> Buka Google Maps
+        </a>
+    </section>
+
+    <!-- RSVP & BUKU TAMU SECTION -->
+    <section id="rsvp">
+        <div class="section-header">
+            <i class="fa-solid fa-pen-to-square icon"></i>
+            <h2>Konfirmasi & Doa</h2>
+            <p>Berikan doa restu & konfirmasi kehadiran Anda</p>
+        </div>
+
+        <!-- Form RSVP -->
+        <form class="rsvp-form" id="rsvpForm" onsubmit="submitRSVP(event)">
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" class="form-control" id="guestName" placeholder="Masukkan nama Anda" required>
+            </div>
+            <div class="form-group">
+                <label>Konfirmasi Kehadiran</label>
+                <select class="form-control" id="guestStatus" required>
+                    <option value="Hadir">Ya, Saya Akan Hadir</option>
+                    <option value="Tidak Hadir">Maaf, Tidak Bisa Hadir</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Pesan & Doa Restu</label>
+                <textarea class="form-control" id="guestMessage" rows="3" placeholder="Tuliskan ucapan atau doa untuk kedua mempelai..." required></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Kirim Ucapan & Konfirmasi</button>
+        </form>
+
+        <!-- List Ucapan -->
+        <div class="wishes-list" id="wishesList">
+            <div class="wish-item">
+                <strong>Andi & Keluarga</strong>
+                Selamat menempuh hidup baru Romeo & Juliet! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Selamat mendaki bahtera rumah tangga!
+            </div>
+            <div class="wish-item">
+                <strong>Budi Tim Pendaki</strong>
+                Happy Wedding Brother! Semoga makin solid dan perjalanan rumah tangganya selalu dalam lindungan Allah SWT.
+            </div>
+        </div>
+    </section>
+
+    <!-- THANKS SECTION -->
+    <section class="thanks-section" id="thanks">
+        <div>
+            <i class="fa-solid fa-mountain" style="font-size: 3.5rem; color: var(--accent-gold); margin-bottom: 20px;"></i>
+        </div>
+        <h2>Terima Kasih</h2>
+        <p>Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>
+        
+        <p style="font-family: var(--font-heading); font-size: 1.4rem; color: var(--accent-gold);">
+            Kami Yang Berbahagia,<br>
+            <strong>Romeo & Juliet</strong>
+        </p>
+    </section>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        function openInvitation() {
+            document.getElementById('opening-screen').classList.add('opened');
+            document.getElementById('navbar').classList.add('show');
+            
+            const music = document.getElementById('bgMusic');
+            music.play().catch(e => console.log("Autoplay blocked by browser policy"));
+        }
+
+        let isPlaying = true;
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const btn = document.getElementById('musicBtn');
+            if (isPlaying) {
+                music.pause();
+                btn.innerHTML = '<i class="fa-solid fa-music-slash"></i>';
+            } else {
+                music.play();
+                btn.innerHTML = '<i class="fa-solid fa-music"></i>';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        const eventDate = new Date("Oct 24, 2026 08:00:00").getTime();
+        
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = days < 10 ? '0' + days : days;
+                document.getElementById("hours").innerText = hours < 10 ? '0' + hours : hours;
+                document.getElementById("minutes").innerText = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById("seconds").innerText = seconds < 10 ? '0' + seconds : seconds;
+            }
+        }, 1000);
+
+        function submitRSVP(event) {
+            event.preventDefault();
+            const name = document.getElementById('guestName').value;
+            const message = document.getElementById('guestMessage').value;
+
+            const wishesList = document.getElementById('wishesList');
+            const newWish = document.createElement('div');
+            newWish.className = 'wish-item';
+            newWish.innerHTML = `<strong>${name}</strong>${message}`;
+
+            wishesList.prepend(newWish);
+            document.getElementById('rsvpForm').reset();
+            alert('Terima kasih! Pesan dan konfirmasi Anda telah terkirim.');
+        }
+
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
