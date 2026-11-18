@@ -1,22 +1,236 @@
-/* Aturan Dasar Halaman*/
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #0c0101;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/*wadah kartu utama*/
-.card {
-    background-color: #bbc7c7;
-    width: 320px;
-    padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    text-align: center;
-    
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at center, #401080 0%, #18052e 55%, #080014 100%);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.background-aura {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(174, 70, 255, 0.22),
+    transparent 65%
+  );
+  animation: aura 4s ease-in-out infinite alternate;
+}
+
+@keyframes aura {
+  from { opacity: 0.35; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1.15); }
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 35px 15px;
+  isolation: isolate;
+}
+
+/* Karakter di belakang countdown */
+.characters {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  width: 100%;
+  margin: auto;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.character {
+  width: 38%;
+  text-align: center;
+  animation: floatCharacter 5s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px #b44cff);
+}
+
+.character.the-world {
+  animation-delay: -2.5s;
+}
+
+.character img {
+  width: 100%;
+  max-height: 550px;
+  object-fit: contain;
+  opacity: 0.48;
+  -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+}
+
+.character p {
+  color: #d9a4ff;
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-shadow: 0 0 15px #a020f0;
+  opacity: 0.7;
+}
+
+@keyframes floatCharacter {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-18px) scale(1.025);
+  }
+}
+
+/* Countdown */
+.countdown-content {
+  width: min(100%, 650px);
+  text-align: center;
+  padding: 35px 20px;
+  border: 1px solid rgba(213, 153, 255, 0.5);
+  border-radius: 25px;
+  background: rgba(15, 0, 35, 0.78);
+  box-shadow:
+    0 0 25px rgba(174, 70, 255, 0.45),
+    inset 0 0 25px rgba(174, 70, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.subtitle {
+  color: #d6a2ff;
+  letter-spacing: 6px;
+  font-size: 12px;
+}
+
+h1 {
+  margin: 15px 0;
+  font-size: clamp(30px, 7vw, 55px);
+  color: #e5c4ff;
+  text-shadow: 0 0 18px #a020f0;
+}
+
+.target {
+  color: #cda2ff;
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+}
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.time-box {
+  padding: 18px 5px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #54118b, #230044);
+  border: 1px solid #bd78ff;
+  box-shadow: 0 0 15px rgba(175, 80, 255, 0.3);
+}
+
+.time-box span {
+  display: block;
+  font-size: clamp(25px, 6vw, 42px);
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 12px #d28aff;
+}
+
+.time-box small {
+  display: block;
+  margin-top: 7px;
+  color: #e2c2ff;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+#status {
+  margin-top: 25px;
+  color: #e1baff;
+}
+
+/* Pengaturan waktu */
+.custom-timer {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.custom-timer label {
+  font-size: 13px;
+  color: #d8b5ff;
+}
+
+input {
+  padding: 12px;
+  border: 1px solid #b56aff;
+  border-radius: 8px;
+  background: #1b0630;
+  color: white;
+}
+
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #8b2be2, #c15cff);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.2);
+}
+
+button.reset {
+  background: #39204e;
+  border: 1px solid #a65ce0;
+}
+
+footer {
+  margin-top: 30px;
+  color: #c28aff;
+  letter-spacing: 5px;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .characters {
+    align-items: center;
+  }
+
+  .character {
+    width: 48%;
+  }
+
+  .character img {
+    max-height: 380px;
+    opacity: 0.35;
+  }
+
+  .countdown-content {
+    padding: 25px 12px;
+  }
+
+  .countdown {
+    gap: 6px;
+  }
+
+  .time-box {
+    padding: 15px 2px;
+  }
 }

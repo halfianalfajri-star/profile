@@ -1,13 +1,66 @@
-s<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>TENTANG DEWI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown PSAS II 2026</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<body background="download.jpg"
-  <h1>Ngeliatin Dewi Lewat</h1>
-  <button onClick="mulaiGame()">STAR</button>
-  <script src="script.js"></script>
+
+  <div class="background-aura"></div>
+
+  <main class="container">
+
+    <div class="characters">
+      <div class="character dio">
+        <img src="images-removebg-preview.png" alt="Dio Brando & The word">
+        <p>Dio Brando</p>
+      </div>
+
+      <div class="character the-world">
+        <img src="images__1_-removebg-preview.png" alt="Jotaro kujo & Star Platinum">
+        <p>Jotaro Kujo</p>
+      </div>
+    </div>
+
+    <section class="countdown-content">
+      <p class="subtitle">PREPARE YOURSELF</p>
+      <h1>PSAS II 2026</h1>
+      <p class="target">30 DESEMBER 2026</p>
+
+      <div class="countdown">
+        <div class="time-box">
+          <span id="days">00</span>
+          <small>HARI</small>
+        </div>
+        <div class="time-box">
+          <span id="hours">00</span>
+          <small>JAM</small>
+        </div>
+        <div class="time-box">
+          <span id="minutes">00</span>
+          <small>MENIT</small>
+        </div>
+        <div class="time-box">
+          <span id="seconds">00</span>
+          <small>DETIK</small>
+        </div>
+      </div>
+
+      <p id="status">Waktu terus berjalan...</p>
+
+      <div class="custom-timer">
+        <label for="customDate">Atur waktu countdown sendiri:</label>
+        <input type="datetime-local" id="customDate">
+        <button onClick="startCustomTimer()">MULAI COUNTDOWN</button>
+        <button class="reset" onClick="resetTimer()">RESET</button>
+      </div>
+    </section>
+
+    <footer>「 HALFIAN THE WORD 」</footer>
+  </main>
+
+  <script src="jamdio.js"></script>
 </body>
 </html>
